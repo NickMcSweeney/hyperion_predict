@@ -2,7 +2,6 @@
 
 class KalmanFilter {
 private:
-	Eigen::Vector4d data_; // return value
   Eigen::Matrix4d A_;
   Eigen::Matrix4d B_;
   Eigen::Matrix4d P_;
@@ -19,11 +18,13 @@ private:
   double t_;
 
 public:
-	KalmanFilter();
+	KalmanFilter(double dt);
 
 private:
 	void predict();
 	void update();
 
-	void filter(Eigen::Vector4d measurement, double dt, float time);
+public:
+	Eigen::Vector4d filter(Eigen::Vector4d measurement, float time);
+  Eigen::Vector4d estimate(Eigen::Vector4d measurement, float time);
 };

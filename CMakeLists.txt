@@ -14,6 +14,7 @@ set(MESSAGE_DEPENDENCIES
 set(LIBS
   libs/core.cpp
   libs/kalman_filter.cpp
+  libs/utils.cpp
   )
 
 ## Find catkin macros and libraries
