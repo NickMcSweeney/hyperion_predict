@@ -1,13 +1,16 @@
 class Utils {
 public:
-	Utils();
+  Utils();
 
 private:
-	std::string error_;
+  std::string error_;
 
 public:
-	std::map<int, std::map<int, std::vector<double>>> read_in(std::vector<std::string> data);
-	void read_to(std::map<int, std::map<int, std::vector<double>>> *dest,
-							 std::vector<std::string> data);
-	std::string difference(double p, double m);
+  std::map<int, std::map<int, std::vector<double>>>
+  read_in(std::vector<std::string> data);
+  void read_to(std::map<int, std::map<int, std::vector<double>>> *dest,
+               std::vector<std::string> data);
+  std::string difference(double p, double m);
+
+  std::string calc_error(std::vector<double> m, std::vector<double> p);
 };
