@@ -15,13 +15,14 @@ using namespace std;
 
 int main(int argc, char **argv) {
   /**
-   * main function. init and connect withtthe ROS  system
+   * main function. init and connect with the ROS  system
    *
    */
 
   ros::init(argc, argv, "hyperion_predict");
   ros::NodeHandle nh;
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(100);
+  ros::Rate long_loop_rate(10);
 
   double current_t = ros::Time::now().toSec();
   double last_t = ros::Time::now().toSec();
@@ -31,27 +32,30 @@ int main(int argc, char **argv) {
 
   Core core = Core(&delta_t, &nh);
 
+  ros::spinOnce();
+  long_loop_rate.sleep();
   ROS_INFO("RUNNING");
-  while (ros::ok() && clock < 9) {
-    last_t = current_t;
-    current_t = ros::Time::now().toSec();
-    delta_t = current_t - last_t;
-    ROS_INFO("clock time: %f", clock);
-    try {
-      // run the interaction stuff here
-      // thread pthread(&Core::predict, &core);
-      // pthread.join();
-      // core.queue();
-      if (clock >= interval) {
-        core.predict(clock);
-        core.save(clock);
-        interval += 1.0;
+  while (ros::ok() && clock < 30) {
+    if (ros::Time::now().toSec() >= (current_t + 0.1)) {
+      last_t = current_t;
+      current_t = ros::Time::now().toSec();
+      delta_t = current_t - last_t;
+      ROS_INFO("clock time: %f", clock);
+      try {
+        // run the interaction stuff here
+        core.run(clock);
+        if (clock >= interval - 0.05) {
+          core.predict(clock);
+          core.save(clock);
+          interval += 1.0;
+        }
+      } catch (const char *err) {
+        ROS_ERROR("Sorry you broke it");
+        ROS_ERROR("MSG: %s", err);
+        exit(-1);
       }
-    } catch (int e) {
-      ROS_ERROR("Sorry you broke it");
-      exit(-1);
+      clock += delta_t;
     }
-    clock += delta_t;
     ros::spinOnce();
     loop_rate.sleep();
   }
